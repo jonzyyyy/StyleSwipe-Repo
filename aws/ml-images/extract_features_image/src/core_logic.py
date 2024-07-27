@@ -16,8 +16,8 @@ logger = logging.getLogger()
 
 # Setup s3 
 s3 = boto3.client('s3')
-BUCKET_SAVED = 'sagemaker-studio-31b52b60' # Bucket for numpy files
-BUCKET_RAW = 'photoscsv' # Bucket for photos and csv files
+BUCKET_SAVED = 'numpyfiles' # Bucket for numpy files
+BUCKET_RAW = 'styleswipedata' # Bucket for photos and csv files
 
 # Define directory paths
 s3_data = 'data/'

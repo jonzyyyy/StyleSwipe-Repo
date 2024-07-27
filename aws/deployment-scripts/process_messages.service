@@ -1,14 +1,14 @@
 [Unit]
 Description=Process SQS Messages
 After=network.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
 User=ec2-user
 ExecStart=/usr/bin/python3 /home/ec2-user/process_messages.py
 Restart=on-failure
-RestartSec=5s  # Add a delay before restarting
-StartLimitIntervalSec=0  # Disable start limit interval to avoid repeated start failure
+RestartSec=5s
 StandardOutput=journal
 StandardError=journal
 

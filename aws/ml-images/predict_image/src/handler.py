@@ -15,10 +15,10 @@ def lambda_handler(event, context):
     num_results = event["num_results"]
     
     data = get_similar_products_cnn(product_id, num_results)
-    logger.info('Data cnn calculated')
+    logger.info(f'Data cnn calculated: {data}')
     return {
         'statusCode': 200,
-        'body': json.dumps(data)
+        'body': data
     }
 
-#   "Similar 4 products": [19372,35233,10633,45604]
+#   "Similar 4 products": [10634, 19372, 35233, 10633, 45604]

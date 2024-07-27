@@ -12,8 +12,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 s3 = boto3.client('s3')
-BUCKET_NAME = 'sagemaker-studio-31b52b60' # Bucket for numpy files
-BUCKET_RAW = 'photoscsv'
+BUCKET_NAME = 'numpyfiles' # Bucket for numpy files
+BUCKET_RAW = 'styleswipedata'
 
 # Global variables for caching
 men_features, women_features, boys_features, girls_features = None, None, None, None
@@ -79,6 +79,7 @@ def initialize_variables(to_initialize):
         logging.info('Variables initialised')        
 
 def get_similar_products_cnn(product_id, num_results):
+    product_id = str(product_id)
     global men_features, women_features, boys_features, girls_features
     global men_product_ids, women_product_ids, boys_product_ids, girls_product_ids
     global fashion_df
@@ -103,16 +104,8 @@ def get_similar_products_cnn(product_id, num_results):
     pairwise_dist = pairwise_distances(features, features[doc_id].reshape(1, -1))
     indices = np.argsort(pairwise_dist.flatten())[0:num_results]
     pdists = np.sort(pairwise_dist.flatten())[0:num_results]
-    similar_product_ids = [ids_list[i] for i in indices]
+    similar_product_ids = [int(ids_list[i]) for i in indices]
     logging.info('Similar products calculated')
     
-    data = {'similar_product_ids': similar_product_ids}
+    data = similar_product_ids
     return data
-
-# if __name__ == "__main__":
-#     event = {
-#         "product_id": '10634',
-#         "num_results": 5
-#     }
-#     context = None
-#     print(lambda_handler(event, context))

@@ -14,8 +14,8 @@ logging.basicConfig(filename='/home/ec2-user/process_messages.log', level=loggin
 sqs_client = boto3.client('sqs')
 ssm_client = boto3.client('ssm')
 ec2_client = boto3.client('ec2')
-QUEUE_URL = 'https://sqs.ap-southeast-1.amazonaws.com/471112819437/feature_extraction.fifo'
-INSTANCE_ID = 'i-006c4d255c11b82d5'
+QUEUE_URL = 'https://sqs.ap-southeast-1.amazonaws.com/905418350500/feature_extraction.fifo'
+INSTANCE_ID = 'i-0434004ca090a09a9'
 
 def run_docker_script(instance_id):
     logging.info('Running Docker script on instance %s', instance_id)
@@ -25,7 +25,7 @@ def run_docker_script(instance_id):
         "AWS_SECRET_ACCESS_KEY=$(aws configure get default.aws_secret_access_key) "
         "docker run -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} "
         "-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} "
-        "471112819437.dkr.ecr.ap-southeast-1.amazonaws.com/my-extract-features:latest"
+        "905418350500.dkr.ecr.ap-southeast-1.amazonaws.com/my-extract-features"
     )
 
     response = ssm_client.send_command(
@@ -59,7 +59,9 @@ def process_messages():
 
     while True:
         response = sqs_client.receive_message(QueueUrl=QUEUE_URL, MaxNumberOfMessages=1, WaitTimeSeconds=20)
+        logging.info('Received response: %s', response)
         messages = response.get('Messages', [])
+        logging.info('Received %d messages', len(messages))
         
         if not messages:
             logging.info("No more messages. Shutting down.")
@@ -78,7 +80,7 @@ def process_messages():
         
         time.sleep(5)  # Sleep briefly to prevent tight looping
 
-    # shutdown_instance(INSTANCE_ID)
+    shutdown_instance(INSTANCE_ID)
 
 
 def shutdown_instance(instance_id):
